@@ -4,3 +4,10 @@ publickey
 *.key
 wg0.conf
 !wg0.conf.example
+
+# Unredacted source screenshots. The copies under docs/images/ have the
+# private keys masked; these do not. Keep the originals outside the repo.
+site vpn projectimg/
+
+# Local README render, not part of the project.
+preview.html
