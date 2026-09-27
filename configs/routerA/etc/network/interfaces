@@ -1,0 +1,31 @@
+# RouterA (VMID 9002) - /etc/network/interfaces
+#
+# Guest interface names are assigned by the kernel and say nothing about which
+# bridge they are on. Match them by MAC address against the Proxmox hardware
+# list before writing any addresses:
+#
+#   net0  BC:24:11:5C:15:39  vmbr0   -> ens18  (temporary uplink, remove later)
+#   net1  BC:24:11:F2:4A:EE  vmbr30  -> ens19  (WAN)
+#   net2  BC:24:11:23:74:18  vmbr10  -> ens20  (Site A LAN)
+
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+# Temporary uplink, used only to install packages during the build.
+# Remove this NIC once the lab is finished so the tunnel is the only
+# path off this router.
+allow-hotplug ens18
+iface ens18 inet dhcp
+
+# WAN side of the simulated link. A /30 because a point-to-point link
+# only ever has two hosts.
+auto ens19
+iface ens19 inet static
+    address 192.168.100.1/30
+
+# Site A LAN. This address is the default gateway for clientA.
+auto ens20
+iface ens20 inet static
+    address 10.0.1.1/24

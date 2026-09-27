@@ -1,0 +1,28 @@
+# Appended to /etc/network/interfaces on the Proxmox host.
+#
+# Three Linux bridges with no physical port. A Proxmox bridge is a virtual
+# switch; with `bridge-ports none` it has no uplink, so each one is a fully
+# isolated broadcast domain that only the VMs/CTs attached to it can reach.
+#
+# vmbr0 (the host's real uplink, on enp2s0) is not shown here.
+
+auto vmbr10
+iface vmbr10 inet manual
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+#Site A LAN - 10.0.1.0/24
+
+auto vmbr20
+iface vmbr20 inet manual
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+#Site B LAN - 10.0.2.0/24
+
+auto vmbr30
+iface vmbr30 inet manual
+        bridge-ports none
+        bridge-stp off
+        bridge-fd 0
+#Simulated WAN - 192.168.100.0/30 - connects RouterA and RouterB only

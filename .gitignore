@@ -1,0 +1,6 @@
+# Never commit WireGuard key material.
+privatekey
+publickey
+*.key
+wg0.conf
+!wg0.conf.example

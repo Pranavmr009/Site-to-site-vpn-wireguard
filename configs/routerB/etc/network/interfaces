@@ -1,0 +1,35 @@
+# RouterB (VMID 9003) - /etc/network/interfaces
+#
+# Cloned from RouterA. Interface names carried over; the bridge behind net2
+# was changed from vmbr10 to vmbr20, and both static addresses were changed.
+#
+#   net0  BC:24:11:3A:92:AB  vmbr0   -> ens18  (temporary uplink, remove later)
+#   net1  BC:24:11:27:A0:41  vmbr30  -> ens19  (WAN)
+#   net2  BC:24:11:E6:7F:CA  vmbr20  -> ens20  (Site B LAN)
+#
+# After cloning, editing this file is not enough: ifupdown's runtime state was
+# cloned too, so it believes the interfaces are already configured. Force it:
+#
+#   ip addr flush dev ens20
+#   ifdown --force ens20
+#   ifup ens20
+#
+# Also regenerate /etc/machine-id, or both VMs request the same DHCP lease:
+#
+#   rm -f /etc/machine-id && systemd-machine-id-setup
+
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+allow-hotplug ens18
+iface ens18 inet dhcp
+
+auto ens19
+iface ens19 inet static
+    address 192.168.100.2/30
+
+auto ens20
+iface ens20 inet static
+    address 10.0.2.1/24

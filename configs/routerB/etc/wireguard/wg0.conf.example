@@ -1,0 +1,22 @@
+# RouterB - /etc/wireguard/wg0.conf
+#
+# Mirror image of RouterA's config: own private key, peer's public key,
+# and AllowedIPs pointing at the *remote* site.
+
+[Interface]
+# Replace with the contents of RouterB's `privatekey`.
+PrivateKey = <ROUTER_B_PRIVATE_KEY>
+
+Address    = 10.10.10.2/30
+ListenPort = 51820
+
+[Peer]
+# RouterA's public key.
+PublicKey = bzzJUZ8No+gr+7Q/h5CvUR2plHrgvcbavrRbx54iTVU=
+
+Endpoint  = 192.168.100.1:51820
+
+# The remote site from RouterB's point of view is Site A.
+AllowedIPs = 10.0.1.0/24
+
+PersistentKeepalive = 25

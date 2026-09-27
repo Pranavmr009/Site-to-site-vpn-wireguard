@@ -1,0 +1,38 @@
+# RouterA - /etc/wireguard/wg0.conf
+#
+#   chmod 600 /etc/wireguard/wg0.conf
+#   wg-quick up wg0
+#   systemctl enable wg-quick@wg0
+#
+# Generate the keypair on this router and never move the private key off it:
+#   wg genkey | tee privatekey | wg pubkey > publickey
+
+[Interface]
+# Replace with the contents of RouterA's `privatekey`.
+PrivateKey = <ROUTER_A_PRIVATE_KEY>
+
+# Tunnel endpoint address. /30 - point-to-point, two hosts.
+Address    = 10.10.10.1/30
+ListenPort = 51820
+
+[Peer]
+# RouterB's public key (safe to publish - this is the real one from the lab).
+PublicKey = 7tw9PdUxXKN8ICnJvxjoIi0AqrUC21b2jqNlGIAA50M=
+
+# Where to send encrypted packets: RouterB's WAN address on vmbr30.
+Endpoint  = 192.168.100.2:51820
+
+# Cryptokey routing. This one line does two jobs:
+#   outbound - installs `ip route add 10.0.2.0/24 dev wg0`, so traffic for
+#              Site B enters the tunnel;
+#   inbound  - acts as an ACL. A decrypted packet whose source is outside this
+#              range is dropped, so this peer cannot spoof another site.
+#
+# Note it does NOT include 10.10.10.0/30. That is why a ping originated by
+# RouterA itself fails (source becomes 10.10.10.1) while a ping from clientA
+# succeeds. Test from the client, or use `ping -I 10.0.1.1`.
+AllowedIPs = 10.0.2.0/24
+
+# Send a keepalive every 25s so the path stays open through any stateful
+# firewall or NAT sitting between the two sites.
+PersistentKeepalive = 25
